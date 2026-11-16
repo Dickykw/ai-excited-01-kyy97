@@ -1,47 +1,48 @@
-# The Jellyfish Above the City
+# ai-excited-01 — The Jellyfish Above the City
 
-![make.fun badge](https://make.fun/badge/ai-excited-01.svg)
-![rank](https://make.fun/badge/ai-excited-01/Dickykw/ai-excited-01-kyy97/rank.svg)
-![reward](https://make.fun/badge/ai-excited-01/Dickykw/ai-excited-01-kyy97/reward.svg)
+Entry for the [ai-excited-01 bounty](https://make.fun/bounty/ai-excited-01)
+on make.fun — an image that captures pure excitement: the moment a whole
+city looks up and gasps at once.
 
-Entry for the [make.fun bounty ai-excited-01 — "Make the AI judge excited"](https://make.fun/bounty/ai-excited-01) ($250 pool).
+## The image
 
-## What the image shows
+A giant bioluminescent jellyfish drifts over a neon cyberpunk city at night.
+Its bell glows electric cyan, its tentacles trail violet light down between
+the towers, and the streets below burn pink and blue with neon. No one in
+the city is looking at their phone — every light, every face, every window
+is pointed up at the impossible thing in the sky.
 
-A gigantic luminous jellyfish, the size of a skyscraper, drifts above a
-neon city at dusk. Its long tentacles trail ribbons of glowing light down
-between the towers while tiny lit windows stare up at it. The whole scene
-is built on scale and wonder: one impossible, beautiful creature hovering
-over an ordinary city, glowing cyan against the dark streets. No text,
-no watermark — just the moment of awe.
-
-The image was generated with FLUX (via the free Pollinations route) from
-an original prompt, then cropped by 40 px on the bottom and right edges
-to remove a generator watermark. Final image: 728×728 px JPEG,
-50,774 bytes.
+The image was generated with FLUX (via Pollinations) from a hand-written
+prompt, then cropped to remove the generator watermark. It contains no text.
 
 ## How it works
 
-`main.py` (Python 3.13, standard library only) does exactly one thing:
-it reads `entry.png` from the same directory as the script and copies it
-byte-for-byte to `$MAKEFUN_OUTPUT_DIR/entry.png` (default `/output`),
-creating the output directory if needed. No network access, no
-randomness, no image processing at run time — the judge sees exactly the
-bundled bytes. After copying, the program verifies the output bytes
-match the source bytes and exits non-zero if they do not.
+`main.py` is deliberately simple and fully deterministic:
 
-Run it locally:
+1. It locates the bundled `entry.png` next to itself.
+2. It byte-copies that file to `/output/entry.png` (creating `/output` if
+   needed).
+3. It verifies the copy afterwards — both file size and SHA-256 hash must
+   match the bundled image exactly, or it exits non-zero with an error.
 
-```sh
-mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
+Python 3 standard library only. No network access, no randomness, no
+external dependencies — running it twice produces byte-identical output.
+
+```bash
+python3 main.py
+# wrote /output/entry.png (365098 bytes, sha256 1ca01e43...)
 ```
 
 ## Files
 
-| File | Purpose |
+| File | Description |
 | --- | --- |
-| `entry.png` | The entry image (JPEG bytes, 728×728, 50,774 bytes) |
-| `main.py` | Copies `entry.png` to the output directory, byte-for-byte |
+| `entry.png` | The entry image (768 × 720 PNG) |
+| `main.py` | Copies `entry.png` to `/output/entry.png` and verifies it |
 | `README.md` | This file |
-| `LICENSE` | MIT license |
-| `.makefun/owner.json` | Owner wallet for the entry |
+| `LICENSE` | MIT License |
+| `.makefun/owner.json` | Owner wallet for the bounty |
+
+## License
+
+MIT — see [LICENSE](LICENSE).

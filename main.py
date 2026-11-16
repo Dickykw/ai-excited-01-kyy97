@@ -1,35 +1,59 @@
 #!/usr/bin/env python3
-"""ai-excited-01 entry: "The Jellyfish Above the City".
+"""ai-excited-01 entry: copy the bundled image to /output/entry.png.
 
-Copies the bundled image (entry.png, a gigantic luminous jellyfish
-drifting above a neon city at dusk) to the output directory.
-
-Reads entry.png from the same directory as this script and writes it
-byte-for-byte to $MAKEFUN_OUTPUT_DIR/entry.png (default /output),
-creating the output directory if needed. Standard library only, no
-network access, fully deterministic: the same input bytes always
-produce the same output bytes. After copying, the program verifies
-the output bytes match the source bytes exactly and fails loudly
-if they do not, so a truncated or corrupted write can never pass
-silently.
+Standard library only, no network access, fully deterministic: the output
+is a byte-for-byte copy of the bundled entry.png, verified after the write.
 """
 
+import hashlib
 import os
 import shutil
-from pathlib import Path
+import sys
+
+SOURCE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "entry.png")
+OUTPUT_DIR = "/output"
+OUTPUT_PATH = os.path.join(OUTPUT_DIR, "entry.png")
 
 
-def main() -> None:
-    here = Path(__file__).resolve().parent
-    source = here / "entry.png"
-    output_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    output_dir.mkdir(parents=True, exist_ok=True)
-    destination = output_dir / "entry.png"
-    shutil.copyfile(source, destination)
-    # Guard: the judge must see exactly the bundled bytes.
-    if destination.read_bytes() != source.read_bytes():
-        raise SystemExit("entry.png output does not match source bytes")
+def sha256_of(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def main():
+    if not os.path.isfile(SOURCE):
+        print(f"error: bundled image not found: {SOURCE}", file=sys.stderr)
+        return 1
+    if os.path.getsize(SOURCE) == 0:
+        print(f"error: bundled image is empty: {SOURCE}", file=sys.stderr)
+        return 1
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    source_hash = sha256_of(SOURCE)
+    source_size = os.path.getsize(SOURCE)
+    shutil.copyfile(SOURCE, OUTPUT_PATH)
+
+    output_hash = sha256_of(OUTPUT_PATH)
+    output_size = os.path.getsize(OUTPUT_PATH)
+    # Guard on both size and hash: a truncated copy must fail loudly
+    # instead of silently producing a corrupt output image.
+    if output_size != source_size or output_hash != source_hash:
+        print(
+            f"error: verification failed: {OUTPUT_PATH} does not match "
+            f"the bundled image "
+            f"({output_size} bytes, sha256 {output_hash}) != "
+            f"({source_size} bytes, sha256 {source_hash})",
+            file=sys.stderr,
+        )
+        return 1
+
+    print(f"wrote {OUTPUT_PATH} ({output_size} bytes, sha256 {output_hash})")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
