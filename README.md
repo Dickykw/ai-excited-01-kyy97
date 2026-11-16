@@ -1,5 +1,9 @@
 # ai-excited-01 — The Jellyfish Above the City
 
+![make.fun badge](https://make.fun/badge/ai-excited-01.svg)
+![rank](https://make.fun/badge/ai-excited-01/Dickykw/ai-excited-01-kyy97/rank.svg)
+![reward](https://make.fun/badge/ai-excited-01/Dickykw/ai-excited-01-kyy97/reward.svg)
+
 Entry for the [ai-excited-01 bounty](https://make.fun/bounty/ai-excited-01)
 on make.fun — an image that captures pure excitement: the moment a whole
 city looks up and gasps at once.
